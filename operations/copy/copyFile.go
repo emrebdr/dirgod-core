@@ -11,7 +11,7 @@ var DEFAULT_FILE_COPY_PERMS = os.FileMode(0644)
 type CopyFile struct {
 	Source         string
 	Destination    string
-	options        models.OperationOptions
+	Options        models.OperationOptions
 	Result         OperationResult
 	RollbackResult OperationResult
 }
@@ -42,10 +42,10 @@ func (c *CopyFile) Rollback() {
 }
 
 func (c *CopyFile) decideErrorOutput(err error) {
-	if c.options.WorkingMode == models.Force {
+	if c.Options.WorkingMode == models.Force {
 		c.Result.Completed = true
 		c.Result.Err = err
-	} else if c.options.WorkingMode == models.Default {
+	} else if c.Options.WorkingMode == models.Default {
 		// TODO: check for dependency tree
 		c.Result.Completed = false
 		c.Result.Err = err
