@@ -9,6 +9,6 @@ const (
 )
 
 type OperationOptions struct {
-	Options Options
-	Cache   bool
+	WorkingMode Options
+	Cache       bool
 }
