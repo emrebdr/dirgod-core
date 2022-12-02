@@ -24,7 +24,7 @@ func (c *CreateFolder) Exec() {
 	}
 
 	if err != nil {
-		c.decideErrorOutput(err)
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
 	}
 
@@ -41,17 +41,4 @@ func (c *CreateFolder) Rollback() {
 	}
 
 	c.RollbackResult.Completed = true
-}
-
-func (c *CreateFolder) decideErrorOutput(err error) {
-	if c.Options.WorkingMode == models.Force {
-		c.Result.Completed = true
-		c.Result.Err = err
-	} else if c.Options.WorkingMode == models.Default {
-		c.Result.Completed = false
-		c.Result.Err = err
-	} else {
-		c.Result.Completed = false
-		c.Result.Err = err
-	}
 }

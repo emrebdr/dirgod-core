@@ -16,7 +16,7 @@ type CreateFile struct {
 func (c *CreateFile) Exec() {
 	file, err := os.Create(c.Path)
 	if err != nil {
-		c.decideErrorOutput(err)
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
 	}
 
@@ -34,18 +34,4 @@ func (c *CreateFile) Rollback() {
 	}
 
 	c.RollbackResult.Completed = true
-}
-
-func (c *CreateFile) decideErrorOutput(err error) {
-	if c.Options.WorkingMode == models.Force {
-		c.Result.Completed = true
-		c.Result.Err = err
-	} else if c.Options.WorkingMode == models.Default {
-		// TODO: check for dependency tree
-		c.Result.Completed = false
-		c.Result.Err = err
-	} else {
-		c.Result.Completed = false
-		c.Result.Err = err
-	}
 }

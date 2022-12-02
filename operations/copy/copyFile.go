@@ -2,7 +2,7 @@ package copy
 
 import (
 	"ena/dirgod/models"
-	. "ena/dirgod/operations"
+	"ena/dirgod/operations"
 	"os"
 )
 
@@ -12,19 +12,20 @@ type CopyFile struct {
 	Source         string
 	Destination    string
 	Options        models.OperationOptions
-	Result         OperationResult
-	RollbackResult OperationResult
+	Result         operations.OperationResult
+	RollbackResult operations.OperationResult
 }
 
 func (c *CopyFile) Exec() {
 	b, err := os.ReadFile(c.Source)
 	if err != nil {
-		c.decideErrorOutput(err)
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
 	}
 	werr := os.WriteFile(c.Destination, b, DEFAULT_FILE_COPY_PERMS)
 	if werr != nil {
-		c.decideErrorOutput(werr)
+		operations.DecideErrorOutput(&c.Options, &c.Result, werr)
+		return
 	}
 
 	c.Result.Completed = true
@@ -38,19 +39,5 @@ func (c *CopyFile) Rollback() {
 		c.RollbackResult.Err = err
 	} else {
 		c.RollbackResult.Completed = true
-	}
-}
-
-func (c *CopyFile) decideErrorOutput(err error) {
-	if c.Options.WorkingMode == models.Force {
-		c.Result.Completed = true
-		c.Result.Err = err
-	} else if c.Options.WorkingMode == models.Default {
-		// TODO: check for dependency tree
-		c.Result.Completed = false
-		c.Result.Err = err
-	} else {
-		c.Result.Completed = false
-		c.Result.Err = err
 	}
 }
