@@ -3,9 +3,16 @@
 package main
 
 import (
-	"fmt"
+	"ena/dirgod/builder"
 )
 
 func main() {
-	fmt.Println("Hello World")
+	nativeBuilder := &builder.NativeBuilder{}
+	nativeBuilder.Operation = "CreateFolder"
+	nativeBuilder.Argumentes = map[string]interface{}{
+		"path": "test",
+		"workingMode": "Force",
+		"cache": "true",
+	}
+	nativeBuilder.CreateNewOperation()
 }
