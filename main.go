@@ -8,11 +8,10 @@ import (
 
 func main() {
 	nativeBuilder := &builder.NativeBuilder{}
-	nativeBuilder.Operation = "CreateFolder"
-	nativeBuilder.Argumentes = map[string]interface{}{
-		"path": "test",
+	arguments := map[string]string{
+		"path":        "test",
 		"workingMode": "Force",
-		"cache": "true",
+		"cache":       "true",
 	}
-	nativeBuilder.CreateNewOperation()
+	nativeBuilder.CreateNewOperation("CreateFolder", arguments)
 }

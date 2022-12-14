@@ -1,16 +1,16 @@
 package builder
 
 import (
-	"errors"
 	"ena/dirgod/interfaces"
-	"ena/dirgod/operations/create"
 	"ena/dirgod/models"
+	"ena/dirgod/operations/create"
+	"errors"
 )
 
 type CreateFileBuilder struct {
-	Path string `json:"path"`
-	WorkingMode string `json:"workingMode"`
-	Cache string `json:"cache"`
+	Path            string               `json:"path"`
+	WorkingMode     string               `json:"workingMode"`
+	Cache           string               `json:"cache"`
 	createOperation interfaces.Operation `json:"-"`
 }
 
@@ -33,7 +33,7 @@ func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
 		Path: c.Path,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
-			Cache: cache,
+			Cache:       cache,
 		},
 	}
 
@@ -50,10 +50,10 @@ func (c *CreateFileBuilder) setWorkingMode() (models.Options, error) {
 		case "Default":
 			return models.Default, nil
 		default:
-			return -1, errors.New("Unknown working mode")
+			return -1, errors.New("unknown working mode")
 		}
 	}
-	
+
 	return models.Default, nil
 }
 
@@ -65,7 +65,7 @@ func (c *CreateFileBuilder) setCache() (bool, error) {
 		case "Disable":
 			return false, nil
 		default:
-			return false, errors.New("Unknown cache mode")
+			return false, errors.New("unknown cache mode")
 		}
 	}
 

@@ -1,13 +1,11 @@
 package builder
 
 import (
-	"encoding/json"
 	"ena/dirgod/interfaces"
+	"encoding/json"
 )
 
 type NativeBuilder struct {
-	Operation string
-	Argumentes interface{}
 	operations []interfaces.Operation
 }
 
@@ -19,11 +17,11 @@ func (n *NativeBuilder) GetOperations() []interfaces.Operation {
 	return n.operations
 }
 
-func (n *NativeBuilder) CreateNewOperation() (error) {
-	switch n.Operation {
+func (n *NativeBuilder) CreateNewOperation(operationName string, arguments interface{}) error {
+	switch operationName {
 	case "CreateFolder":
 		var operationStruct CreateFolderBuilder
-		encoded, err := json.Marshal(n.Argumentes)
+		encoded, err := json.Marshal(arguments)
 
 		if err != nil {
 			return err
@@ -42,8 +40,8 @@ func (n *NativeBuilder) CreateNewOperation() (error) {
 		return nil
 	case "CreateFile":
 		var operationStruct CreateFileBuilder
-		encoded, err := json.Marshal(n.Argumentes)
-		
+		encoded, err := json.Marshal(arguments)
+
 		if err != nil {
 			return err
 		}
