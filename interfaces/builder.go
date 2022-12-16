@@ -1,5 +1,6 @@
 package interfaces
 
 type Builder interface {
-	Build() (Operation, error);
+	Build() (Operation, error)
+	GetName() string
 }

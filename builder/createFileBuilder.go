@@ -40,14 +40,18 @@ func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
 	return c.createOperation, nil
 }
 
+func (c *CreateFileBuilder) GetName() string {
+	return "CreateFile"
+}
+
 func (c *CreateFileBuilder) setWorkingMode() (models.Options, error) {
 	if c.WorkingMode != "" {
 		switch c.WorkingMode {
-		case "Force":
+		case "force":
 			return models.Force, nil
-		case "Strict":
+		case "strict":
 			return models.Strict, nil
-		case "Default":
+		case "default":
 			return models.Default, nil
 		default:
 			return -1, errors.New("unknown working mode")
@@ -60,9 +64,9 @@ func (c *CreateFileBuilder) setWorkingMode() (models.Options, error) {
 func (c *CreateFileBuilder) setCache() (bool, error) {
 	if c.Cache != "" {
 		switch c.Cache {
-		case "Enable":
+		case "enable":
 			return true, nil
-		case "Disable":
+		case "disable":
 			return false, nil
 		default:
 			return false, errors.New("unknown cache mode")
