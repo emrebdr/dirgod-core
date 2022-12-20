@@ -11,11 +11,11 @@ func main() {
 	nativeBuilder := &builder.NativeBuilder{}
 	nativeBuilder.SetBasePath("test")
 	nativeBuilder.SetWorkingMode("force")
-	nativeBuilder.SetCacheMode("enable")
-	arguments := map[string]string{
+	nativeBuilder.SetCacheMode("true")
+	arguments := map[string]any{
 		"path":        "asd",
 		"workingMode": "strict",
-		"cache":       "disable",
+		"cache":       false,
 	}
 
 	err := nativeBuilder.CreateNewOperation("CreateFolder", arguments)

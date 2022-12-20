@@ -1,16 +1,21 @@
 package builder
 
 import (
+	"ena/dirgod/constants"
 	"ena/dirgod/interfaces"
+	"ena/dirgod/utils"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type NativeBuilder struct {
 	base_path   string
 	workingMode string
-	cache       string
+	cache       bool
 	operations  []interfaces.Operation
 }
 
@@ -24,19 +29,11 @@ func (n *NativeBuilder) GetOperations() []interfaces.Operation {
 
 func (n *NativeBuilder) SetWorkingMode(workingMode string) *NativeBuilder {
 	if workingMode != "" {
-		switch workingMode {
-		case "force":
+		if utils.Contains(constants.WorkingMode, strings.ToLower(workingMode)) {
 			n.workingMode = workingMode
 			return n
-		case "strict":
-			n.workingMode = workingMode
-			return n
-		case "default":
-			n.workingMode = workingMode
-			return n
-		default:
-			n.workingMode = "default"
-			return n
+		} else {
+			fmt.Println("Unknown working mode. Set default working mode")
 		}
 	}
 
@@ -47,26 +44,24 @@ func (n *NativeBuilder) SetWorkingMode(workingMode string) *NativeBuilder {
 
 func (n *NativeBuilder) SetCacheMode(cache string) *NativeBuilder {
 	if cache != "" {
-		switch cache {
-		case "enable":
-			n.cache = cache
-			return n
-		case "disable":
-			n.cache = cache
-			return n
-		default:
-			n.cache = "disable"
+		if strings.ToLower(cache) == "true" {
+			n.cache = true
 			return n
 		}
 	}
 
-	n.cache = "disable"
+	n.cache = false
 
 	return n
 }
 
 func (n *NativeBuilder) SetBasePath(basePath string) *NativeBuilder {
-	n.base_path = basePath
+	if filepath.IsAbs(basePath) {
+		n.base_path = basePath
+		return n
+	}
+
+	n.base_path = filepath.Join(os.Getenv("PWD"), basePath)
 	return n
 }
 
@@ -150,6 +145,10 @@ func (n *NativeBuilder) CreateNewOperation(operationName string, arguments ...in
 	operation, err := operationStruct.Build()
 	if err != nil {
 		return err
+	}
+
+	if isValid := operationStruct.IsValid(); !isValid {
+		return errors.New("invalid operation")
 	}
 
 	n.addOperation(operation)

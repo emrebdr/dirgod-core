@@ -10,7 +10,7 @@ import (
 type CreateFolderBuilder struct {
 	Path            string               `json:"path"`
 	WorkingMode     string               `json:"workingMode"`
-	Cache           string               `json:"cache"`
+	Cache           bool                 `json:"cache"`
 	createOperation interfaces.Operation `json:"-"`
 }
 
@@ -24,16 +24,11 @@ func (c *CreateFolderBuilder) Build() (interfaces.Operation, error) {
 		return nil, err
 	}
 
-	cache, err := c.setCache()
-	if err != nil {
-		return nil, err
-	}
-
 	c.createOperation = &create.CreateFolder{
 		Path: c.Path,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
-			Cache:       cache,
+			Cache:       c.Cache,
 		},
 	}
 
@@ -42,6 +37,10 @@ func (c *CreateFolderBuilder) Build() (interfaces.Operation, error) {
 
 func (c *CreateFolderBuilder) GetName() string {
 	return "CreateFolder"
+}
+
+func (c *CreateFolderBuilder) IsValid() bool {
+	return c.createOperation != nil
 }
 
 func (c *CreateFolderBuilder) setWorkingMode() (models.Options, error) {
@@ -59,19 +58,4 @@ func (c *CreateFolderBuilder) setWorkingMode() (models.Options, error) {
 	}
 
 	return models.Default, nil
-}
-
-func (c *CreateFolderBuilder) setCache() (bool, error) {
-	if c.Cache != "" {
-		switch c.Cache {
-		case "enable":
-			return true, nil
-		case "disable":
-			return false, nil
-		default:
-			return false, errors.New("unknown cache option")
-		}
-	}
-
-	return false, nil
 }
