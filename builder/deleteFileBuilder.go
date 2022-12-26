@@ -3,19 +3,18 @@ package builder
 import (
 	"ena/dirgod/interfaces"
 	"ena/dirgod/models"
-	"ena/dirgod/operations/create"
+	"ena/dirgod/operations/delete"
 	"errors"
-	"strings"
 )
 
-type CreateFileBuilder struct {
+type DeleteFileBuilder struct {
 	Source          string               `json:"source"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
 	createOperation interfaces.Operation `json:"-"`
 }
 
-func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
+func (c *DeleteFileBuilder) Build() (interfaces.Operation, error) {
 	if c.Source == "" {
 		return nil, errors.New("source is empty")
 	}
@@ -25,8 +24,9 @@ func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
 		return nil, err
 	}
 
-	c.createOperation = &create.CreateFile{
-		Source: c.Source,
+	c.createOperation = &delete.DeleteFile{
+		Source:          c.Source,
+		PrevFileContent: nil,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
 			Cache:       c.Cache,
@@ -36,17 +36,17 @@ func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
 	return c.createOperation, nil
 }
 
-func (c *CreateFileBuilder) GetName() string {
-	return "CreateFile"
+func (c *DeleteFileBuilder) GetName() string {
+	return "DeleteFile"
 }
 
-func (c *CreateFileBuilder) IsValid() bool {
+func (c *DeleteFileBuilder) IsValid() bool {
 	return c.createOperation != nil
 }
 
-func (c *CreateFileBuilder) setWorkingMode() (models.Options, error) {
+func (c *DeleteFileBuilder) setWorkingMode() (models.Options, error) {
 	if c.WorkingMode != "" {
-		switch strings.ToLower(c.WorkingMode) {
+		switch c.WorkingMode {
 		case "force":
 			return models.Force, nil
 		case "strict":

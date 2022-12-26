@@ -13,7 +13,7 @@ func main() {
 	nativeBuilder.SetWorkingMode("force")
 	nativeBuilder.SetCacheMode("true")
 	arguments := map[string]any{
-		"path":        "asd",
+		"source":      "asd",
 		"workingMode": "strict",
 		"cache":       false,
 	}

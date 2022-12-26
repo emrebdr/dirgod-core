@@ -8,15 +8,15 @@ import (
 )
 
 type CreateFolderBuilder struct {
-	Path            string               `json:"path"`
+	Source          string               `json:"source"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
 	createOperation interfaces.Operation `json:"-"`
 }
 
 func (c *CreateFolderBuilder) Build() (interfaces.Operation, error) {
-	if c.Path == "" {
-		return nil, errors.New("path is empty")
+	if c.Source == "" {
+		return nil, errors.New("source is empty")
 	}
 
 	workingMode, err := c.setWorkingMode()
@@ -25,7 +25,7 @@ func (c *CreateFolderBuilder) Build() (interfaces.Operation, error) {
 	}
 
 	c.createOperation = &create.CreateFolder{
-		Path: c.Path,
+		Source: c.Source,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
 			Cache:       c.Cache,

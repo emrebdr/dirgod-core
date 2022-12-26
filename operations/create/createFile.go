@@ -7,14 +7,14 @@ import (
 )
 
 type CreateFile struct {
-	Path           string
+	Source         string
 	Options        models.OperationOptions
 	Result         operations.OperationResult
 	RollbackResult operations.OperationResult
 }
 
 func (c *CreateFile) Exec() {
-	file, err := os.Create(c.Path)
+	file, err := os.Create(c.Source)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
@@ -26,7 +26,7 @@ func (c *CreateFile) Exec() {
 }
 
 func (c *CreateFile) Rollback() {
-	err := os.Remove(c.Path)
+	err := os.Remove(c.Source)
 	if err != nil {
 		c.RollbackResult.Completed = false
 		c.RollbackResult.Err = err

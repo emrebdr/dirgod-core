@@ -80,7 +80,7 @@ func (n *NativeBuilder) decodeOperations(operationName string, arguments []inter
 
 func (n *NativeBuilder) setDefaultValues(operation interfaces.Builder) (interfaces.Builder, error) {
 	defaultArguments := map[string]interface{}{
-		"path":        n.base_path,
+		"source":      n.base_path,
 		"workingMode": n.workingMode,
 		"cache":       n.cache,
 	}

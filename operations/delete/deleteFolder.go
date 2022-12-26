@@ -6,7 +6,7 @@ import (
 )
 
 type DeleteFolder struct {
-	options models.OperationOptions
+	Options models.OperationOptions
 }
 
 func (d *DeleteFolder) Exec() {

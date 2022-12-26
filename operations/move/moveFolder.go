@@ -6,7 +6,7 @@ import (
 )
 
 type MoveFolder struct {
-	options models.OperationOptions
+	Options models.OperationOptions
 }
 
 func (m *MoveFolder) Exec() {

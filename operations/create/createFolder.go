@@ -6,10 +6,10 @@ import (
 	"os"
 )
 
-var DEFAUL_CREATE_FOLDER_PERMISSION = os.FileMode(0755)
+var DEFAULT_CREATE_FOLDER_PERMISSION = os.FileMode(0755)
 
 type CreateFolder struct {
-	Path           string
+	Source         string
 	Options        models.OperationOptions
 	Result         operations.OperationResult
 	RollbackResult operations.OperationResult
@@ -18,9 +18,9 @@ type CreateFolder struct {
 func (c *CreateFolder) Exec() {
 	var err error
 	if c.Options.WorkingMode == models.Force {
-		err = os.MkdirAll(c.Path, DEFAUL_CREATE_FOLDER_PERMISSION)
+		err = os.MkdirAll(c.Source, DEFAULT_CREATE_FOLDER_PERMISSION)
 	} else {
-		err = os.Mkdir(c.Path, DEFAUL_CREATE_FOLDER_PERMISSION)
+		err = os.Mkdir(c.Source, DEFAULT_CREATE_FOLDER_PERMISSION)
 	}
 
 	if err != nil {
@@ -33,7 +33,7 @@ func (c *CreateFolder) Exec() {
 
 func (c *CreateFolder) Rollback() {
 	// Remove single empty folder or force remove all recursive child folders and files with checking WorkingMode
-	err := os.RemoveAll(c.Path)
+	err := os.RemoveAll(c.Source)
 	if err != nil {
 		c.RollbackResult.Completed = false
 		c.RollbackResult.Err = err

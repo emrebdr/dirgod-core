@@ -3,21 +3,25 @@ package builder
 import (
 	"ena/dirgod/interfaces"
 	"ena/dirgod/models"
-	"ena/dirgod/operations/create"
+	"ena/dirgod/operations/copy"
 	"errors"
-	"strings"
 )
 
-type CreateFileBuilder struct {
+type CopyFileBuilder struct {
 	Source          string               `json:"source"`
+	Destination     string               `json:"destination"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
 	createOperation interfaces.Operation `json:"-"`
 }
 
-func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
+func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
 	if c.Source == "" {
 		return nil, errors.New("source is empty")
+	}
+
+	if c.Destination == "" {
+		return nil, errors.New("destination is empty")
 	}
 
 	workingMode, err := c.setWorkingMode()
@@ -25,8 +29,9 @@ func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
 		return nil, err
 	}
 
-	c.createOperation = &create.CreateFile{
-		Source: c.Source,
+	c.createOperation = &copy.CopyFile{
+		Source:      c.Source,
+		Destination: c.Destination,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
 			Cache:       c.Cache,
@@ -36,17 +41,17 @@ func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {
 	return c.createOperation, nil
 }
 
-func (c *CreateFileBuilder) GetName() string {
-	return "CreateFile"
+func (c *CopyFileBuilder) GetName() string {
+	return "CopyFile"
 }
 
-func (c *CreateFileBuilder) IsValid() bool {
+func (c *CopyFileBuilder) IsValid() bool {
 	return c.createOperation != nil
 }
 
-func (c *CreateFileBuilder) setWorkingMode() (models.Options, error) {
+func (c *CopyFileBuilder) setWorkingMode() (models.Options, error) {
 	if c.WorkingMode != "" {
-		switch strings.ToLower(c.WorkingMode) {
+		switch c.WorkingMode {
 		case "force":
 			return models.Force, nil
 		case "strict":
