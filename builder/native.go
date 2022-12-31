@@ -88,6 +88,12 @@ func (n *NativeBuilder) decodeOperations(operationName string, arguments []inter
 	case "CopyFile":
         var operationStruct CopyFileBuilder
         return n.prepareOperation(&operationStruct, arguments)
+	case "Chmod":
+        var operationStruct ChmodBuilder
+        return n.prepareOperation(&operationStruct, arguments)
+	case "Chown":
+        var operationStruct ChownBuilder
+        return n.prepareOperation(&operationStruct, arguments)
 	}
 
 	return nil, errors.New("unknown operation")
