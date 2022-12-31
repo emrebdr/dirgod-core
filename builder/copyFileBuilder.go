@@ -12,7 +12,7 @@ type CopyFileBuilder struct {
 	Destination     string               `json:"destination"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
-	createOperation interfaces.Operation `json:"-"`
+	createOperation interfaces.Operation
 }
 
 func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {

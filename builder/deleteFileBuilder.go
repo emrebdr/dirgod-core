@@ -11,7 +11,7 @@ type DeleteFileBuilder struct {
 	Source          string               `json:"source"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
-	createOperation interfaces.Operation `json:"-"`
+	createOperation interfaces.Operation
 }
 
 func (c *DeleteFileBuilder) Build() (interfaces.Operation, error) {
@@ -26,7 +26,6 @@ func (c *DeleteFileBuilder) Build() (interfaces.Operation, error) {
 
 	c.createOperation = &delete.DeleteFile{
 		Source:          c.Source,
-		PrevFileContent: nil,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
 			Cache:       c.Cache,

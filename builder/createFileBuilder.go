@@ -12,7 +12,7 @@ type CreateFileBuilder struct {
 	Source          string               `json:"source"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
-	createOperation interfaces.Operation `json:"-"`
+	createOperation interfaces.Operation
 }
 
 func (c *CreateFileBuilder) Build() (interfaces.Operation, error) {

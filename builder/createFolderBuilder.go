@@ -11,7 +11,7 @@ type CreateFolderBuilder struct {
 	Source          string               `json:"source"`
 	WorkingMode     string               `json:"workingMode"`
 	Cache           bool                 `json:"cache"`
-	createOperation interfaces.Operation `json:"-"`
+	createOperation interfaces.Operation
 }
 
 func (c *CreateFolderBuilder) Build() (interfaces.Operation, error) {
