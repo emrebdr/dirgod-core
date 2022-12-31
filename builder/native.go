@@ -73,6 +73,21 @@ func (n *NativeBuilder) decodeOperations(operationName string, arguments []inter
 	case "CreateFile":
 		var operationStruct CreateFileBuilder
 		return n.prepareOperation(&operationStruct, arguments)
+	case "MoveFile":
+        var operationStruct MoveFileBuilder
+        return n.prepareOperation(&operationStruct, arguments)
+	case "MoveFolder":
+        var operationStruct MoveFolderBuilder
+        return n.prepareOperation(&operationStruct, arguments)
+	case "DeleteFile":
+        var operationStruct DeleteFileBuilder
+        return n.prepareOperation(&operationStruct, arguments)
+	case "DeleteFolder":
+        var operationStruct DeleteFolderBuilder
+        return n.prepareOperation(&operationStruct, arguments)
+	case "CopyFile":
+        var operationStruct CopyFileBuilder
+        return n.prepareOperation(&operationStruct, arguments)
 	}
 
 	return nil, errors.New("unknown operation")
