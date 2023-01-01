@@ -74,26 +74,29 @@ func (n *NativeBuilder) decodeOperations(operationName string, arguments []inter
 		var operationStruct CreateFileBuilder
 		return n.prepareOperation(&operationStruct, arguments)
 	case "MoveFile":
-        var operationStruct MoveFileBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct MoveFileBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	case "MoveFolder":
-        var operationStruct MoveFolderBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct MoveFolderBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	case "DeleteFile":
-        var operationStruct DeleteFileBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct DeleteFileBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	case "DeleteFolder":
-        var operationStruct DeleteFolderBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct DeleteFolderBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	case "CopyFile":
-        var operationStruct CopyFileBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct CopyFileBuilder
+		return n.prepareOperation(&operationStruct, arguments)
+	case "CopyFolder":
+		var operationStruct CopyFolderBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	case "Chmod":
-        var operationStruct ChmodBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct ChmodBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	case "Chown":
-        var operationStruct ChownBuilder
-        return n.prepareOperation(&operationStruct, arguments)
+		var operationStruct ChownBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	}
 
 	return nil, errors.New("unknown operation")

@@ -8,9 +8,9 @@ import (
 )
 
 type CreateFolderBuilder struct {
-	Source          string               `json:"source"`
-	WorkingMode     string               `json:"workingMode"`
-	Cache           bool                 `json:"cache"`
+	Source          string `json:"source"`
+	WorkingMode     string `json:"workingMode"`
+	Cache           bool   `json:"cache"`
 	createOperation interfaces.Operation
 }
 

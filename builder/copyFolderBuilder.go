@@ -7,7 +7,7 @@ import (
 	"errors"
 )
 
-type CopyFileBuilder struct {
+type CopyFolderBuilder struct {
 	Source          string `json:"source"`
 	Destination     string `json:"destination"`
 	WorkingMode     string `json:"workingMode"`
@@ -15,7 +15,7 @@ type CopyFileBuilder struct {
 	createOperation interfaces.Operation
 }
 
-func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
+func (c *CopyFolderBuilder) Build() (interfaces.Operation, error) {
 	if c.Source == "" {
 		return nil, errors.New("source is empty")
 	}
@@ -29,7 +29,7 @@ func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
 		return nil, err
 	}
 
-	c.createOperation = &copy.CopyFile{
+	c.createOperation = &copy.CopyFolder{
 		Source:      c.Source,
 		Destination: c.Destination,
 		Options: models.OperationOptions{
@@ -41,15 +41,15 @@ func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
 	return c.createOperation, nil
 }
 
-func (c *CopyFileBuilder) GetName() string {
-	return "CopyFile"
+func (c *CopyFolderBuilder) GetName() string {
+	return "CopyFolder"
 }
 
-func (c *CopyFileBuilder) IsValid() bool {
+func (c *CopyFolderBuilder) IsValid() bool {
 	return c.createOperation != nil
 }
 
-func (c *CopyFileBuilder) setWorkingMode() (models.Options, error) {
+func (c *CopyFolderBuilder) setWorkingMode() (models.Options, error) {
 	if c.WorkingMode != "" {
 		switch c.WorkingMode {
 		case "force":

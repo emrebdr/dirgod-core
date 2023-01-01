@@ -3,10 +3,9 @@ package copy
 import (
 	"ena/dirgod/models"
 	"ena/dirgod/operations"
+	"io"
 	"os"
 )
-
-var DEFAULT_FILE_COPY_PERMS = os.FileMode(0644)
 
 type CopyFile struct {
 	Source         string
@@ -17,14 +16,32 @@ type CopyFile struct {
 }
 
 func (c *CopyFile) Exec() {
-	b, err := os.ReadFile(c.Source)
+	srcFd, err := os.Open(c.Source)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
 	}
-	werr := os.WriteFile(c.Destination, b, DEFAULT_FILE_COPY_PERMS)
-	if werr != nil {
-		operations.DecideErrorOutput(&c.Options, &c.Result, werr)
+	defer srcFd.Close()
+	dstFd, err := os.Create(c.Destination)
+	if err != nil {
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
+		return
+	}
+	defer dstFd.Close()
+
+	if _, err = io.Copy(dstFd, srcFd); err != nil {
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
+		return
+	}
+	srcInfo, err := os.Stat(c.Source)
+	if err != nil {
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
+		return
+	}
+
+	err = os.Chmod(c.Destination, srcInfo.Mode())
+	if err != nil {
+		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
 	}
 
