@@ -4,15 +4,16 @@ import (
 	"ena/dirgod/interfaces"
 	"ena/dirgod/models"
 	"ena/dirgod/operations/copy"
+	"ena/dirgod/utils"
 	"errors"
 )
 
 type CopyFileBuilder struct {
-	Source          string `json:"source"`
-	Destination     string `json:"destination"`
-	WorkingMode     string `json:"workingMode"`
-	Cache           bool   `json:"cache"`
-	createOperation interfaces.Operation
+	Source      string `json:"source"`
+	Destination string `json:"destination"`
+	WorkingMode string `json:"workingMode"`
+	Cache       bool   `json:"cache"`
+	operation   interfaces.Operation
 }
 
 func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
@@ -24,12 +25,12 @@ func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
 		return nil, errors.New("destination is empty")
 	}
 
-	workingMode, err := c.setWorkingMode()
+	workingMode, err := utils.SetWorkingMode(c.WorkingMode)
 	if err != nil {
 		return nil, err
 	}
 
-	c.createOperation = &copy.CopyFile{
+	c.operation = &copy.CopyFile{
 		Source:      c.Source,
 		Destination: c.Destination,
 		Options: models.OperationOptions{
@@ -38,7 +39,7 @@ func (c *CopyFileBuilder) Build() (interfaces.Operation, error) {
 		},
 	}
 
-	return c.createOperation, nil
+	return c.operation, nil
 }
 
 func (c *CopyFileBuilder) GetName() string {
@@ -46,22 +47,5 @@ func (c *CopyFileBuilder) GetName() string {
 }
 
 func (c *CopyFileBuilder) IsValid() bool {
-	return c.createOperation != nil
-}
-
-func (c *CopyFileBuilder) setWorkingMode() (models.Options, error) {
-	if c.WorkingMode != "" {
-		switch c.WorkingMode {
-		case "force":
-			return models.Force, nil
-		case "strict":
-			return models.Strict, nil
-		case "default":
-			return models.Default, nil
-		default:
-			return -1, errors.New("unknown working mode")
-		}
-	}
-
-	return models.Default, nil
+	return c.operation != nil
 }

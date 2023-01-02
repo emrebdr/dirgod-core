@@ -4,17 +4,18 @@ import (
 	"ena/dirgod/interfaces"
 	"ena/dirgod/models"
 	"ena/dirgod/operations/ch"
+	"ena/dirgod/utils"
 	"errors"
 	"os"
 )
 
 type ChmodBuilder struct {
-	Source          string `json:"source"`
-	Perm            int    `json:"perm"`
-	Recursive       bool   `json:"recursive"`
-	WorkingMode     string `json:"workingMode"`
-	Cache           bool   `json:"cache"`
-	createOperation interfaces.Operation
+	Source      string `json:"source"`
+	Perm        int    `json:"perm"`
+	Recursive   bool   `json:"recursive"`
+	WorkingMode string `json:"workingMode"`
+	Cache       bool   `json:"cache"`
+	operation   interfaces.Operation
 }
 
 func (c *ChmodBuilder) Build() (interfaces.Operation, error) {
@@ -26,12 +27,12 @@ func (c *ChmodBuilder) Build() (interfaces.Operation, error) {
 		return nil, errors.New("perm must be greater than 0")
 	}
 
-	workingMode, err := c.setWorkingMode()
+	workingMode, err := utils.SetWorkingMode(c.WorkingMode)
 	if err != nil {
 		return nil, err
 	}
 
-	c.createOperation = &ch.Chmod{
+	c.operation = &ch.Chmod{
 		Source:    c.Source,
 		PermCode:  os.FileMode(c.Perm),
 		Recursive: c.Recursive,
@@ -41,7 +42,7 @@ func (c *ChmodBuilder) Build() (interfaces.Operation, error) {
 		},
 	}
 
-	return c.createOperation, nil
+	return c.operation, nil
 }
 
 func (c *ChmodBuilder) GetName() string {
@@ -49,22 +50,5 @@ func (c *ChmodBuilder) GetName() string {
 }
 
 func (c *ChmodBuilder) IsValid() bool {
-	return c.createOperation != nil
-}
-
-func (c *ChmodBuilder) setWorkingMode() (models.Options, error) {
-	if c.WorkingMode != "" {
-		switch c.WorkingMode {
-		case "force":
-			return models.Force, nil
-		case "strict":
-			return models.Strict, nil
-		case "default":
-			return models.Default, nil
-		default:
-			return -1, errors.New("unknown working mode")
-		}
-	}
-
-	return models.Default, nil
+	return c.operation != nil
 }

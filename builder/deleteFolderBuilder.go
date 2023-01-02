@@ -4,14 +4,15 @@ import (
 	"ena/dirgod/interfaces"
 	"ena/dirgod/models"
 	"ena/dirgod/operations/delete"
+	"ena/dirgod/utils"
 	"errors"
 )
 
 type DeleteFolderBuilder struct {
-	Source          string `json:"source"`
-	WorkingMode     string `json:"workingMode"`
-	Cache           bool   `json:"cache"`
-	createOperation interfaces.Operation
+	Source      string `json:"source"`
+	WorkingMode string `json:"workingMode"`
+	Cache       bool   `json:"cache"`
+	operation   interfaces.Operation
 }
 
 func (d *DeleteFolderBuilder) Build() (interfaces.Operation, error) {
@@ -19,12 +20,12 @@ func (d *DeleteFolderBuilder) Build() (interfaces.Operation, error) {
 		return nil, errors.New("source is empty")
 	}
 
-	workingMode, err := d.setWorkingMode()
+	workingMode, err := utils.SetWorkingMode(d.WorkingMode)
 	if err != nil {
 		return nil, err
 	}
 
-	d.createOperation = &delete.DeleteFolder{
+	d.operation = &delete.DeleteFolder{
 		Source: d.Source,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
@@ -32,7 +33,7 @@ func (d *DeleteFolderBuilder) Build() (interfaces.Operation, error) {
 		},
 	}
 
-	return d.createOperation, nil
+	return d.operation, nil
 }
 
 func (d *DeleteFolderBuilder) GetName() string {
@@ -40,22 +41,5 @@ func (d *DeleteFolderBuilder) GetName() string {
 }
 
 func (d *DeleteFolderBuilder) IsValid() bool {
-	return d.createOperation != nil
-}
-
-func (d *DeleteFolderBuilder) setWorkingMode() (models.Options, error) {
-	if d.WorkingMode != "" {
-		switch d.WorkingMode {
-		case "force":
-			return models.Force, nil
-		case "strict":
-			return models.Strict, nil
-		case "default":
-			return models.Default, nil
-		default:
-			return -1, errors.New("unknown working mode")
-		}
-	}
-
-	return models.Default, nil
+	return d.operation != nil
 }

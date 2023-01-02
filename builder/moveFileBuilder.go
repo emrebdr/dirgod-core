@@ -4,14 +4,15 @@ import (
 	"ena/dirgod/interfaces"
 	"ena/dirgod/models"
 	"ena/dirgod/operations/move"
+	"ena/dirgod/utils"
 	"errors"
 )
 
 type MoveFileBuilder struct {
-	Source          string `json:"source"`
-	WorkingMode     string `json:"workingMode"`
-	Cache           bool   `json:"cache"`
-	createOperation interfaces.Operation
+	Source      string `json:"source"`
+	WorkingMode string `json:"workingMode"`
+	Cache       bool   `json:"cache"`
+	operation   interfaces.Operation
 }
 
 func (m *MoveFileBuilder) Build() (interfaces.Operation, error) {
@@ -19,12 +20,12 @@ func (m *MoveFileBuilder) Build() (interfaces.Operation, error) {
 		return nil, errors.New("source is empty")
 	}
 
-	workingMode, err := m.setWorkingMode()
+	workingMode, err := utils.SetWorkingMode(m.WorkingMode)
 	if err != nil {
 		return nil, err
 	}
 
-	m.createOperation = &move.MoveFile{
+	m.operation = &move.MoveFile{
 		Source: m.Source,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
@@ -32,7 +33,7 @@ func (m *MoveFileBuilder) Build() (interfaces.Operation, error) {
 		},
 	}
 
-	return m.createOperation, nil
+	return m.operation, nil
 }
 
 func (m *MoveFileBuilder) GetName() string {
@@ -40,22 +41,5 @@ func (m *MoveFileBuilder) GetName() string {
 }
 
 func (m *MoveFileBuilder) IsValid() bool {
-	return m.createOperation != nil
-}
-
-func (m *MoveFileBuilder) setWorkingMode() (models.Options, error) {
-	if m.WorkingMode != "" {
-		switch m.WorkingMode {
-		case "force":
-			return models.Force, nil
-		case "strict":
-			return models.Strict, nil
-		case "default":
-			return models.Default, nil
-		default:
-			return -1, errors.New("unknown working mode")
-		}
-	}
-
-	return models.Default, nil
+	return m.operation != nil
 }
