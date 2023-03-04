@@ -3,8 +3,7 @@
 package main
 
 import (
-	"ena/dirgod/builder"
-	"fmt"
+	"github.com/emrebdr/dirgod-code/builder"
 )
 
 func main() {
@@ -29,6 +28,5 @@ func main() {
 	}
 
 	operation := nativeBuilder.GetOperations()
-
-	fmt.Println(operation)
+	operation[0].Exec()
 }

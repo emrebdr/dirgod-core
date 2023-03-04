@@ -1,11 +1,12 @@
 package copy
 
 import (
-	"ena/dirgod/models"
-	"ena/dirgod/operations"
 	"io"
 	"os"
 	"path"
+
+	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-code/operations"
 )
 
 type CopyFolder struct {

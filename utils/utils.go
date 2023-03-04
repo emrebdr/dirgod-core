@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"ena/dirgod/models"
 	"errors"
+
+	"github.com/emrebdr/dirgod-code/models"
 )
 
 func Contains(array []any, value any) bool {

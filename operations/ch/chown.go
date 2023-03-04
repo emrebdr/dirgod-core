@@ -1,11 +1,12 @@
 package ch
 
 import (
-	"ena/dirgod/models"
-	"ena/dirgod/operations"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-code/operations"
 )
 
 type Chown struct {

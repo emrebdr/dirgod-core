@@ -1,11 +1,12 @@
 package builder
 
 import (
-	"ena/dirgod/interfaces"
-	"ena/dirgod/models"
-	"ena/dirgod/operations/delete"
-	"ena/dirgod/utils"
 	"errors"
+
+	"github.com/emrebdr/dirgod-code/interfaces"
+	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-code/operations/delete"
+	"github.com/emrebdr/dirgod-code/utils"
 )
 
 type DeleteFolderBuilder struct {

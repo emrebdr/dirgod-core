@@ -1,15 +1,16 @@
 package builder
 
 import (
-	"ena/dirgod/constants"
-	"ena/dirgod/interfaces"
-	"ena/dirgod/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/emrebdr/dirgod-code/constants"
+	"github.com/emrebdr/dirgod-code/interfaces"
+	"github.com/emrebdr/dirgod-code/utils"
 )
 
 type NativeBuilder struct {

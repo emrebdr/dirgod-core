@@ -1,9 +1,10 @@
 package create
 
 import (
-	"ena/dirgod/models"
-	"ena/dirgod/operations"
 	"os"
+
+	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-code/operations"
 )
 
 type CreateFile struct {

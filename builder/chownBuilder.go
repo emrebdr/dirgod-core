@@ -1,11 +1,12 @@
 package builder
 
 import (
-	"ena/dirgod/interfaces"
-	"ena/dirgod/models"
-	"ena/dirgod/operations/ch"
-	"ena/dirgod/utils"
 	"errors"
+
+	"github.com/emrebdr/dirgod-code/interfaces"
+	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-code/operations/ch"
+	"github.com/emrebdr/dirgod-code/utils"
 )
 
 type ChownBuilder struct {

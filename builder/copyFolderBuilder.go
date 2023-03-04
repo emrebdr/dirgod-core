@@ -1,11 +1,12 @@
 package builder
 
 import (
-	"ena/dirgod/interfaces"
-	"ena/dirgod/models"
-	"ena/dirgod/operations/copy"
-	"ena/dirgod/utils"
 	"errors"
+
+	"github.com/emrebdr/dirgod-code/interfaces"
+	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-code/operations/copy"
+	"github.com/emrebdr/dirgod-code/utils"
 )
 
 type CopyFolderBuilder struct {
