@@ -1,6 +1,6 @@
 package operations
 
-import "github.com/emrebdr/dirgod-code/models"
+import "github.com/emrebdr/dirgod-core/models"
 
 func DecideErrorOutput(options *models.OperationOptions, result *OperationResult, err error) {
 	if options.WorkingMode == models.Force {

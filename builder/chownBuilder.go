@@ -3,10 +3,10 @@ package builder
 import (
 	"errors"
 
-	"github.com/emrebdr/dirgod-code/interfaces"
-	"github.com/emrebdr/dirgod-code/models"
-	"github.com/emrebdr/dirgod-code/operations/ch"
-	"github.com/emrebdr/dirgod-code/utils"
+	"github.com/emrebdr/dirgod-core/interfaces"
+	"github.com/emrebdr/dirgod-core/models"
+	"github.com/emrebdr/dirgod-core/operations/ch"
+	"github.com/emrebdr/dirgod-core/utils"
 )
 
 type ChownBuilder struct {

@@ -3,8 +3,8 @@ package create
 import (
 	"os"
 
-	"github.com/emrebdr/dirgod-code/models"
-	"github.com/emrebdr/dirgod-code/operations"
+	"github.com/emrebdr/dirgod-core/models"
+	"github.com/emrebdr/dirgod-core/operations"
 )
 
 var DEFAULT_CREATE_FOLDER_PERMISSION = os.FileMode(0755)

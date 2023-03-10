@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/emrebdr/dirgod-code/builder"
+	"github.com/emrebdr/dirgod-core/builder"
 )
 
 func main() {

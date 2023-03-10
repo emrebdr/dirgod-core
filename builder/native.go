@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/emrebdr/dirgod-code/constants"
-	"github.com/emrebdr/dirgod-code/interfaces"
-	"github.com/emrebdr/dirgod-code/utils"
+	"github.com/emrebdr/dirgod-core/constants"
+	"github.com/emrebdr/dirgod-core/interfaces"
+	"github.com/emrebdr/dirgod-core/utils"
 )
 
 type NativeBuilder struct {

@@ -3,7 +3,7 @@ package utils
 import (
 	"errors"
 
-	"github.com/emrebdr/dirgod-code/models"
+	"github.com/emrebdr/dirgod-core/models"
 )
 
 func Contains(array []any, value any) bool {

@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/emrebdr/dirgod-code/constants"
-	"github.com/emrebdr/dirgod-code/models"
-	"github.com/emrebdr/dirgod-code/operations"
+	"github.com/emrebdr/dirgod-core/constants"
+	"github.com/emrebdr/dirgod-core/models"
+	"github.com/emrebdr/dirgod-core/operations"
 )
 
 type DeleteFolder struct {

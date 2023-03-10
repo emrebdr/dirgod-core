@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/emrebdr/dirgod-code/models"
-	"github.com/emrebdr/dirgod-code/operations"
+	"github.com/emrebdr/dirgod-core/models"
+	"github.com/emrebdr/dirgod-core/operations"
 )
 
 type CopyFolder struct {
