@@ -20,6 +20,10 @@ type NativeBuilder struct {
 	operations  []interfaces.Operation
 }
 
+func NewNativeBuilder() *NativeBuilder {
+	return &NativeBuilder{}
+}
+
 func (n *NativeBuilder) addOperation(operation interfaces.Operation) {
 	n.operations = append(n.operations, operation)
 }

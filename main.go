@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	nativeBuilder := &builder.NativeBuilder{}
+	nativeBuilder := builder.NewNativeBuilder()
 	nativeBuilder.SetBasePath("test")
 	nativeBuilder.SetWorkingMode("force")
 	nativeBuilder.SetCacheMode("true")
