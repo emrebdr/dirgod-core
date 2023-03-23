@@ -71,35 +71,36 @@ func (n *NativeBuilder) SetBasePath(basePath string) *NativeBuilder {
 }
 
 func (n *NativeBuilder) decodeOperations(operationName string, arguments []interface{}) (interfaces.Builder, error) {
+	operationName = strings.ToLower(operationName)
 	switch operationName {
-	case "CreateFolder":
+	case "createfolder":
 		var operationStruct CreateFolderBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "CreateFile":
+	case "createfile":
 		var operationStruct CreateFileBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "MoveFile":
+	case "movefile":
 		var operationStruct MoveFileBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "MoveFolder":
+	case "movefolder":
 		var operationStruct MoveFolderBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "DeleteFile":
+	case "deletefile":
 		var operationStruct DeleteFileBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "DeleteFolder":
+	case "deletefolder":
 		var operationStruct DeleteFolderBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "CopyFile":
+	case "copyfile":
 		var operationStruct CopyFileBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "CopyFolder":
+	case "copyfolder":
 		var operationStruct CopyFolderBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "Chmod":
+	case "chmod":
 		var operationStruct ChmodBuilder
 		return n.prepareOperation(&operationStruct, arguments)
-	case "Chown":
+	case "chown":
 		var operationStruct ChownBuilder
 		return n.prepareOperation(&operationStruct, arguments)
 	}
