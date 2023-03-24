@@ -8,6 +8,7 @@ import (
 	"github.com/emrebdr/dirgod-core/constants"
 	"github.com/emrebdr/dirgod-core/models"
 	"github.com/emrebdr/dirgod-core/operations"
+	"github.com/emrebdr/dirgod-core/utils"
 )
 
 type DeleteFolder struct {
@@ -18,7 +19,14 @@ type DeleteFolder struct {
 }
 
 func (d *DeleteFolder) Exec() {
-	err := os.Rename(d.Source, constants.EnaTmp)
+	err := utils.CreateDirgodTempFolder()
+	if err != nil {
+		operations.DecideErrorOutput(&d.Options, &d.Result, err)
+		return
+	}
+
+	folderName := strings.Split(d.Source, "/")
+	err = os.Rename(d.Source, constants.EnaTmp+folderName[len(folderName)-1])
 	if err != nil {
 		operations.DecideErrorOutput(&d.Options, &d.Result, err)
 		return

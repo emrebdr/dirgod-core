@@ -2,7 +2,9 @@ package utils
 
 import (
 	"errors"
+	"os"
 
+	"github.com/emrebdr/dirgod-core/constants"
 	"github.com/emrebdr/dirgod-core/models"
 )
 
@@ -30,4 +32,12 @@ func SetWorkingMode(workingMode string) (models.Options, error) {
 	}
 
 	return models.Default, nil
+}
+
+func CreateDirgodTempFolder() error {
+	if _, err := os.Stat(constants.EnaTmp); os.IsNotExist(err) {
+		return os.MkdirAll(constants.EnaTmp, os.FileMode(0755))
+	}
+
+	return nil
 }
