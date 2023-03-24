@@ -11,6 +11,7 @@ import (
 
 type MoveFolderBuilder struct {
 	Source      string `json:"source"`
+	Destination string `json:"destination"`
 	WorkingMode string `json:"workingMode"`
 	Cache       bool   `json:"cache"`
 	operation   interfaces.Operation
@@ -21,13 +22,18 @@ func (m *MoveFolderBuilder) Build() (interfaces.Operation, error) {
 		return nil, errors.New("source is empty")
 	}
 
+	if m.Destination == "" {
+		return nil, errors.New("destination is empty")
+	}
+
 	workingMode, err := utils.SetWorkingMode(m.WorkingMode)
 	if err != nil {
 		return nil, err
 	}
 
 	m.operation = &move.MoveFolder{
-		Source: m.Source,
+		Source:      m.Source,
+		Destination: m.Destination,
 		Options: models.OperationOptions{
 			WorkingMode: workingMode,
 			Cache:       m.Cache,
