@@ -103,6 +103,9 @@ func (n *NativeBuilder) decodeOperations(operationName string, arguments []inter
 	case "chown":
 		var operationStruct ChownBuilder
 		return n.prepareOperation(&operationStruct, arguments)
+	case "write":
+		var operationStruct WriteBuilder
+		return n.prepareOperation(&operationStruct, arguments)
 	}
 
 	return nil, errors.New("unknown operation")

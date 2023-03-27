@@ -3,6 +3,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/emrebdr/dirgod-core/builder"
 )
 
@@ -28,5 +30,5 @@ func main() {
 	}
 
 	operation := nativeBuilder.GetOperations()
-	operation[0].Exec()
+	fmt.Printf("operation: %v\n", operation)
 }
