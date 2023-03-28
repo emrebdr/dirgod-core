@@ -3,7 +3,6 @@ package copy
 import (
 	"io"
 	"os"
-	"path"
 
 	"github.com/emrebdr/dirgod-core/models"
 	"github.com/emrebdr/dirgod-core/operations"
@@ -18,36 +17,10 @@ type CopyFolder struct {
 }
 
 func (c *CopyFolder) Exec() {
-	srcInfo, err := os.Stat(c.Source)
+	err := c.CopyDir(c.Source, c.Destination)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
 		return
-	}
-
-	err = os.MkdirAll(c.Destination, srcInfo.Mode())
-	if err != nil {
-		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
-	}
-
-	fds, err := os.ReadDir(c.Source)
-	if err != nil {
-		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
-	}
-
-	for _, fd := range fds {
-		srcFp := path.Join(c.Source, fd.Name())
-		dstFp := path.Join(c.Destination, fd.Name())
-
-		if fd.IsDir() {
-			c.Exec()
-		} else {
-			if err = c.File(srcFp, dstFp); err != nil {
-				operations.DecideErrorOutput(&c.Options, &c.Result, err)
-				return
-			}
-		}
 	}
 
 	c.Result.Completed = true
@@ -64,27 +37,68 @@ func (c *CopyFolder) Rollback() {
 	c.RollbackResult.Completed = true
 }
 
-func (c *CopyFolder) File(src, dst string) error {
-	var err error
-	var srcFd *os.File
-	var dstFd *os.File
-	var srcInfo os.FileInfo
+func (c *CopyFolder) CopyFile(source string, dest string) error {
+	sourcefile, err := os.Open(source)
+	if err != nil {
+		return err
+	}
 
-	if srcFd, err = os.Open(src); err != nil {
-		return err
-	}
-	defer srcFd.Close()
+	defer sourcefile.Close()
 
-	if dstFd, err = os.Create(dst); err != nil {
+	destFile, err := os.Create(dest)
+	if err != nil {
 		return err
 	}
-	defer dstFd.Close()
 
-	if _, err = io.Copy(dstFd, srcFd); err != nil {
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourcefile)
+	if err == nil {
+		sourceInfo, err := os.Stat(source)
+		if err != nil {
+			err = os.Chmod(dest, sourceInfo.Mode())
+			return err
+		}
+		return nil
+	}
+
+	return err
+}
+
+func (c *CopyFolder) CopyDir(source string, dest string) error {
+	sourceInfo, err := os.Stat(source)
+	if err != nil {
 		return err
 	}
-	if srcInfo, err = os.Stat(src); err != nil {
+
+	err = os.MkdirAll(dest, sourceInfo.Mode())
+	if err != nil {
 		return err
 	}
-	return os.Chmod(dst, srcInfo.Mode())
+
+	directory, _ := os.Open(source)
+
+	objects, err := directory.Readdir(-1)
+	if err != nil {
+		return err
+	}
+
+	for _, obj := range objects {
+		sourceFilePointer := source + "/" + obj.Name()
+		destinationFilePointer := dest + "/" + obj.Name()
+
+		if obj.IsDir() {
+			err = c.CopyDir(sourceFilePointer, destinationFilePointer)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = c.CopyFile(sourceFilePointer, destinationFilePointer)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
