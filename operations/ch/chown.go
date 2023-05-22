@@ -21,11 +21,11 @@ type Chown struct {
 	RollbackResult operations.OperationResult
 }
 
-func (c *Chown) Exec() {
+func (c *Chown) Exec() operations.OperationResult {
 	_, err := os.Stat(c.Source)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	c.PreviousGID = os.Getgid()
@@ -39,10 +39,12 @@ func (c *Chown) Exec() {
 
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	c.Result.Completed = true
+
+	return c.Result
 }
 
 func (c *Chown) Rollback() {

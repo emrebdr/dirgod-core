@@ -26,20 +26,22 @@ type Write struct {
 	RollbackResult operations.OperationResult
 }
 
-func (w *Write) Exec() {
+func (w *Write) Exec() operations.OperationResult {
 	content, err := w.getContent()
 	if err != nil {
 		operations.DecideErrorOutput(&w.Options, &w.Result, err)
-		return
+		return w.Result
 	}
 
 	writeResult := os.WriteFile(w.Destination, content, 0644)
 	if writeResult != nil {
 		operations.DecideErrorOutput(&w.Options, &w.Result, writeResult)
-		return
+		return w.Result
 	}
 
 	w.Result.Completed = true
+
+	return w.Result
 }
 
 func (w *Write) Rollback() {

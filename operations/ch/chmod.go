@@ -19,11 +19,11 @@ type Chmod struct {
 	RollbackResult   operations.OperationResult
 }
 
-func (c *Chmod) Exec() {
+func (c *Chmod) Exec() operations.OperationResult {
 	stats, err := os.Stat(c.Source)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	c.PreviousPermCode = stats.Mode()
@@ -36,10 +36,12 @@ func (c *Chmod) Exec() {
 
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	c.Result.Completed = true
+
+	return c.Result
 }
 
 func (c *Chmod) Rollback() {

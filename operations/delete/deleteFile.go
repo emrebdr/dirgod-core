@@ -18,20 +18,22 @@ type DeleteFile struct {
 	RollbackResult operations.OperationResult
 }
 
-func (d *DeleteFile) Exec() {
+func (d *DeleteFile) Exec() operations.OperationResult {
 	err := utils.CreateDirgodTempFolder()
 	if err != nil {
 		operations.DecideErrorOutput(&d.Options, &d.Result, err)
-		return
+		return d.Result
 	}
 	fileName := strings.Split(d.Source, "/")
 	err = os.Rename(d.Source, constants.EnaTmp+fileName[len(fileName)-1])
 	if err != nil {
 		operations.DecideErrorOutput(&d.Options, &d.Result, err)
-		return
+		return d.Result
 	}
 
 	d.Result.Completed = true
+
+	return d.Result
 }
 
 func (d *DeleteFile) Rollback() {

@@ -14,16 +14,18 @@ type CreateFile struct {
 	RollbackResult operations.OperationResult
 }
 
-func (c *CreateFile) Exec() {
+func (c *CreateFile) Exec() operations.OperationResult {
 	file, err := os.Create(c.Source)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	defer file.Close()
 
 	c.Result.Completed = true
+
+	return c.Result
 }
 
 func (c *CreateFile) Rollback() {

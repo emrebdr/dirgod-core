@@ -10,6 +10,7 @@ import (
 
 	"github.com/emrebdr/dirgod-core/constants"
 	"github.com/emrebdr/dirgod-core/interfaces"
+	"github.com/emrebdr/dirgod-core/repository"
 	"github.com/emrebdr/dirgod-core/utils"
 )
 
@@ -185,5 +186,37 @@ func (n *NativeBuilder) CreateNewOperation(operationName string, arguments ...in
 	}
 
 	n.addOperation(operation)
+	return nil
+}
+
+func (n *NativeBuilder) Execute(commitMessage []byte) error {
+	repo := repository.LoadRepository()
+	if repo == nil {
+		currDir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		splitName := strings.Split(currDir, "/")
+		folderName := splitName[len(splitName)-1]
+		repo = repository.Init(folderName, "")
+	}
+
+	for _, operation := range n.operations {
+		result := operation.Exec()
+		if !result.Completed {
+			return result.Err
+		}
+	}
+
+	if commitMessage == nil {
+		commitMessage = []byte(utils.GenerateId())
+	}
+
+	commitResult := repo.Commit(string(commitMessage))
+	if commitResult != nil {
+		return commitResult
+	}
+
 	return nil
 }

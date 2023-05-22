@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"crypto/sha1"
 	"errors"
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/emrebdr/dirgod-core/constants"
 	"github.com/emrebdr/dirgod-core/models"
@@ -40,4 +43,10 @@ func CreateDirgodTempFolder() error {
 	}
 
 	return nil
+}
+
+func GenerateId() string {
+	time := time.Now().UnixNano()
+	id := fmt.Sprintf("%x", sha1.Sum([]byte(fmt.Sprintf("%d", time))))
+	return id
 }

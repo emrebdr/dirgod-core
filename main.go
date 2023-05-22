@@ -23,6 +23,5 @@ func main() {
 		panic(err)
 	}
 
-	operation := nativeBuilder.GetOperations()
-	operation[0].Exec()
+	nativeBuilder.Execute([]byte("new commit"))
 }

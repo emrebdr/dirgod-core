@@ -15,14 +15,16 @@ type MoveFile struct {
 	RollbackResult operations.OperationResult
 }
 
-func (m *MoveFile) Exec() {
+func (m *MoveFile) Exec() operations.OperationResult {
 	err := os.Rename(m.Source, m.Destination)
 	if err != nil {
 		operations.DecideErrorOutput(&m.Options, &m.Result, err)
-		return
+		return m.Result
 	}
 
 	m.Result.Completed = true
+
+	return m.Result
 }
 
 func (m *MoveFile) Rollback() {

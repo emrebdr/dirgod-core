@@ -18,21 +18,23 @@ type DeleteFolder struct {
 	RollbackResult operations.OperationResult
 }
 
-func (d *DeleteFolder) Exec() {
+func (d *DeleteFolder) Exec() operations.OperationResult {
 	err := utils.CreateDirgodTempFolder()
 	if err != nil {
 		operations.DecideErrorOutput(&d.Options, &d.Result, err)
-		return
+		return d.Result
 	}
 
 	folderName := strings.Split(d.Source, "/")
 	err = os.Rename(d.Source, constants.EnaTmp+folderName[len(folderName)-1])
 	if err != nil {
 		operations.DecideErrorOutput(&d.Options, &d.Result, err)
-		return
+		return d.Result
 	}
 
 	d.Result.Completed = true
+
+	return d.Result
 }
 
 func (d *DeleteFolder) Rollback() {

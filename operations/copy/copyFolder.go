@@ -16,14 +16,16 @@ type CopyFolder struct {
 	RollbackResult operations.OperationResult
 }
 
-func (c *CopyFolder) Exec() {
+func (c *CopyFolder) Exec() operations.OperationResult {
 	err := c.CopyDir(c.Source, c.Destination)
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	c.Result.Completed = true
+
+	return c.Result
 }
 
 func (c *CopyFolder) Rollback() {

@@ -16,7 +16,7 @@ type CreateFolder struct {
 	RollbackResult operations.OperationResult
 }
 
-func (c *CreateFolder) Exec() {
+func (c *CreateFolder) Exec() operations.OperationResult {
 	var err error
 	if c.Options.WorkingMode == models.Force {
 		err = os.MkdirAll(c.Source, DEFAULT_CREATE_FOLDER_PERMISSION)
@@ -26,10 +26,12 @@ func (c *CreateFolder) Exec() {
 
 	if err != nil {
 		operations.DecideErrorOutput(&c.Options, &c.Result, err)
-		return
+		return c.Result
 	}
 
 	c.Result.Completed = true
+
+	return c.Result
 }
 
 func (c *CreateFolder) Rollback() {
