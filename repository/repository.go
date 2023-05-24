@@ -18,10 +18,11 @@ type Repository struct {
 	CommitObject   models.Commit               `json:"commit"`
 	RootConfig     models.RootDirgodConfig     `json:"rootConfig"`
 	InternalConfig models.InternalDirgodConfig `json:"internalConfig"`
+	Path           string                      `json:"path"`
 }
 
-func Init(name, description string) *Repository {
-	repo := &Repository{Name: name, Description: description}
+func Init(name, description, path string) *Repository {
+	repo := &Repository{Name: name, Description: description, Path: path}
 	repo.initializeRepository()
 	return repo
 }
@@ -51,7 +52,7 @@ func LoadRepository() *Repository {
 }
 
 func (r *Repository) checkRepositoryAlreadyExist() error {
-	if _, err := os.Stat(r.Name + "/.dirgod/reporef"); !os.IsNotExist(err) {
+	if _, err := os.Stat(r.Path + "/.dirgod/reporef"); !os.IsNotExist(err) {
 		return errors.New("repository already initialized")
 	}
 
@@ -64,34 +65,34 @@ func (r *Repository) initializeRepository() error {
 		return err
 	}
 
-	err = os.MkdirAll(r.Name+"/.dirgod/objects", 0755)
+	err = os.MkdirAll(r.Path+"/.dirgod/objects", 0755)
 	if err != nil {
 		return err
 	}
 
-	err = os.MkdirAll(r.Name+"/.dirgod/refs/branches", 0755)
+	err = os.MkdirAll(r.Path+"/.dirgod/refs/branches", 0755)
 	if err != nil {
 		return err
 	}
 
-	err = os.MkdirAll(r.Name+"/.dirgod/refs/commits", 0755)
+	err = os.MkdirAll(r.Path+"/.dirgod/refs/commits", 0755)
 	if err != nil {
 		return err
 	}
 
-	err = os.MkdirAll(r.Name+"/.dirgod/logs", 0755)
+	err = os.MkdirAll(r.Path+"/.dirgod/logs", 0755)
 	if err != nil {
 		return err
 	}
 
-	if _, err = os.Stat(r.Name + "/Dirgod"); os.IsNotExist(err) {
-		_, err = os.Create(r.Name + "/Dirgod")
+	if _, err = os.Stat(r.Path + "/Dirgod"); os.IsNotExist(err) {
+		_, err = os.Create(r.Path + "/Dirgod")
 		if err != nil {
 			return err
 		}
 	}
 
-	_, err = os.Create(r.Name + "/.dirgodignore")
+	_, err = os.Create(r.Path + "/.dirgodignore")
 	if err != nil {
 		return err
 	}
@@ -163,11 +164,11 @@ func (r *Repository) loadRootConfigFile() error {
 func (r *Repository) loadInternalConfigFile() error {
 	config := models.InternalDirgodConfig{}
 
-	_, err := os.Stat(r.Name + "/.dirgod/config")
+	_, err := os.Stat(r.Path + "/.dirgod/config")
 	if os.IsNotExist(err) {
 		config.User = r.RootConfig.User
 
-		file, err := os.Create(r.Name + "/.dirgod/config")
+		file, err := os.Create(r.Path + "/.dirgod/config")
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 			return err
@@ -183,7 +184,7 @@ func (r *Repository) loadInternalConfigFile() error {
 			return err
 		}
 	} else {
-		configContent, err := os.ReadFile(r.Name + "/.dirgod/config")
+		configContent, err := os.ReadFile(r.Path + "/.dirgod/config")
 		if err != nil {
 			return err
 		}
@@ -199,7 +200,7 @@ func (r *Repository) loadInternalConfigFile() error {
 }
 
 func (r *Repository) createREADMEFile() error {
-	file, err := os.Create(r.Name + "/README.md")
+	file, err := os.Create(r.Path + "/README.md")
 	if err != nil {
 		return err
 	}
@@ -215,12 +216,12 @@ func (r *Repository) createREADMEFile() error {
 		return errors.New("something went wrong while preparing README.md file")
 	}
 
-	err = os.MkdirAll(r.Name+"/models", 0755)
+	err = os.MkdirAll(r.Path+"/models", 0755)
 	if err != nil {
 		return err
 	}
 
-	_, err = os.Create(r.Name + "/models/user.py")
+	_, err = os.Create(r.Path + "/models/user.py")
 	if err != nil {
 		return err
 	}
@@ -229,7 +230,7 @@ func (r *Repository) createREADMEFile() error {
 }
 
 func (r *Repository) createDescriptionFile() error {
-	file, err := os.Create(r.Name + "/.dirgod/description")
+	file, err := os.Create(r.Path + "/.dirgod/description")
 	if err != nil {
 		return err
 	}
@@ -252,7 +253,7 @@ func (r *Repository) createDescriptionFile() error {
 }
 
 func (r *Repository) saveReporefFile(repository interface{}) error {
-	objectFile, err := os.Create(r.Name + "/.dirgod/reporef")
+	objectFile, err := os.Create(r.Path + "/.dirgod/reporef")
 	if err != nil {
 		return err
 	}

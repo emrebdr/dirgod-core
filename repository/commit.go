@@ -89,7 +89,7 @@ func (r *Repository) createCommitObjectFile() error {
 		return err
 	}
 
-	err = os.WriteFile(r.Name+"/.dirgod/refs/commits/"+r.CommitObject.CommitId, data, 0644)
+	err = os.WriteFile(r.Path+"/.dirgod/refs/commits/"+r.CommitObject.CommitId, data, 0644)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func (r *Repository) createCommitObjectFile() error {
 
 func (r *Repository) createCommitHeadFile(commitId string) error {
 	//? If the branch system comes, this place will change
-	file, err := os.Create(r.Name + "/.dirgod/refs/branches/main")
+	file, err := os.Create(r.Path + "/.dirgod/refs/branches/main")
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func (r *Repository) createCommitHeadFile(commitId string) error {
 		return err
 	}
 
-	HEADFile, err := os.Create(r.Name + "/.dirgod/HEAD")
+	HEADFile, err := os.Create(r.Path + "/.dirgod/HEAD")
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func (r *Repository) createCommitHeadFile(commitId string) error {
 }
 
 func (r *Repository) createCommitMsgFile(message string) error {
-	commitmsgFile, err := os.Create(r.Name + "/.dirgod/COMMIT_MSG")
+	commitmsgFile, err := os.Create(r.Path + "/.dirgod/COMMIT_MSG")
 	if err != nil {
 		return err
 	}
@@ -144,8 +144,8 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	directoryMap := map[string]*models.Tree{}
 	blobMap := map[string]*models.Blob{}
 
-	err := filepath.Walk(r.Name, func(path string, info fs.FileInfo, err error) error {
-		if strings.HasPrefix(path, r.Name+"/.dirgod") && !strings.HasPrefix(path, r.Name+"/.dirgodignore") { //! tbc
+	err := filepath.Walk(r.Path, func(path string, info fs.FileInfo, err error) error {
+		if strings.HasPrefix(path, r.Path+"/.dirgod") && !strings.HasPrefix(path, r.Path+"/.dirgodignore") { //! tbc
 			return nil
 		}
 
@@ -211,20 +211,20 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		}
 	}
 
-	root := directoryMap[r.Name]
+	root := directoryMap[r.Path]
 
 	return root, nil
 }
 
 func (r *Repository) createObject(ref, id string, object interface{}) error {
-	if _, err := os.Stat(r.Name + "/.dirgod/objects/" + ref); os.IsNotExist(err) {
-		err = os.MkdirAll(r.Name+"/.dirgod/objects/"+ref, 0755)
+	if _, err := os.Stat(r.Path + "/.dirgod/objects/" + ref); os.IsNotExist(err) {
+		err = os.MkdirAll(r.Path+"/.dirgod/objects/"+ref, 0755)
 		if err != nil {
 			return err
 		}
 	}
 
-	objectFile, err := os.Create(r.Name + "/.dirgod/objects/" + ref + "/" + id)
+	objectFile, err := os.Create(r.Path + "/.dirgod/objects/" + ref + "/" + id)
 	if err != nil {
 		return err
 	}
@@ -245,15 +245,15 @@ func (r *Repository) createObject(ref, id string, object interface{}) error {
 }
 
 func (r *Repository) createCommitLog(commitId, message string) error {
-	_, err := os.Stat(r.Name + "/.dirgod/logs/main")
+	_, err := os.Stat(r.Path + "/.dirgod/logs/main")
 	if os.IsNotExist(err) {
-		_, err = os.Create(r.Name + "/.dirgod/logs/main")
+		_, err = os.Create(r.Path + "/.dirgod/logs/main")
 		if err != nil {
 			return err
 		}
 	}
 
-	readFile, err := os.OpenFile(r.Name+"/.dirgod/logs/main", os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
+	readFile, err := os.OpenFile(r.Path+"/.dirgod/logs/main", os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
 	if err != nil {
 		return err
 	}
@@ -315,7 +315,7 @@ func (r *Repository) loadObjectFile(content string) (interfaces.Object, error) {
 
 func (r *Repository) compareBlobObject(blob models.Blob) string {
 	objectFilePath := ""
-	err := filepath.Walk(r.Name+"/.dirgod/objects", func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(r.Path+"/.dirgod/objects", func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -411,7 +411,7 @@ func (r *Repository) addBlobObject(path, filename string, directoryMap map[strin
 func (r *Repository) createBlobObject(ref, id string, newBlob models.Blob) error {
 	objectPath := r.compareBlobObject(newBlob)
 	if objectPath != "" {
-		err := r.softLinkFile(r.Name+"/.dirgod/objects/"+ref, objectPath)
+		err := r.softLinkFile(r.Path+"/.dirgod/objects/"+ref, objectPath)
 		if err != nil {
 			return err
 		}
@@ -437,7 +437,7 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 	if treeObject != nil {
 		comparisonResult := r.compareTreeObject(treeObject.Path, *treeObject)
 		if comparisonResult != "" {
-			err = r.softLinkFile(r.Name+"/.dirgod/objects/"+ref, comparisonResult)
+			err = r.softLinkFile(r.Path+"/.dirgod/objects/"+ref, comparisonResult)
 			if err != nil {
 				return err
 			}
@@ -551,7 +551,7 @@ func (r *Repository) findAndGetLastCommitObject(name, path string) (*models.Tree
 }
 
 func (r *Repository) getCurrentSnapshotPath() string {
-	headFileContent, err := os.ReadFile(r.Name + "/.dirgod/HEAD")
+	headFileContent, err := os.ReadFile(r.Path + "/.dirgod/HEAD")
 	if err != nil {
 		return ""
 	}
@@ -561,12 +561,12 @@ func (r *Repository) getCurrentSnapshotPath() string {
 		return ""
 	}
 
-	readCommitId, err := os.ReadFile(r.Name + "/.dirgod/" + commitIdReference[len(commitIdReference)-1])
+	readCommitId, err := os.ReadFile(r.Path + "/.dirgod/" + commitIdReference[len(commitIdReference)-1])
 	if err != nil {
 		return ""
 	}
 
-	path := r.Name + "/.dirgod/objects/" + string(readCommitId)[:10]
+	path := r.Path + "/.dirgod/objects/" + string(readCommitId)[:10]
 
 	return path
 }
@@ -574,7 +574,7 @@ func (r *Repository) getCurrentSnapshotPath() string {
 func (r *Repository) createFolderHash(directoryPath string) string {
 	var content string = ""
 	err := filepath.Walk(directoryPath, func(path string, info fs.FileInfo, fErr error) error {
-		if strings.HasPrefix(path, r.Name+"/.dirgod") && !strings.HasPrefix(path, r.Name+"/.dirgodignore") { //! tbc
+		if strings.HasPrefix(path, r.Path+"/.dirgod") && !strings.HasPrefix(path, r.Path+"/.dirgodignore") { //! tbc
 			return nil
 		}
 
@@ -610,7 +610,7 @@ func (r *Repository) createBlobHash(blobPath, name string, fileContent []byte) s
 
 func (r *Repository) findObjectPathFromObjectId(id string) string {
 	var objectPath string = ""
-	err := filepath.Walk(r.Name+"/.dirgod/objects", func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(r.Path+"/.dirgod/objects", func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

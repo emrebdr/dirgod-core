@@ -55,7 +55,7 @@ func (r *Repository) Rollback(commitId string) error {
 
 func (r *Repository) findCommitPath(commitId string) string {
 	var commitPath string = ""
-	err := filepath.Walk(r.Name+"/.dirgod/objects", func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(r.Path+"/.dirgod/objects", func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -150,12 +150,12 @@ func (r *Repository) createStructure(tree models.Tree, commitPath string) error 
 
 func (r *Repository) clearStructure() error {
 	var directoriesPath []string
-	err := filepath.Walk(r.Name, func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(r.Path, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if strings.HasPrefix(path, r.Name+"/.dirgod") || path == r.Name {
+		if strings.HasPrefix(path, r.Path+"/.dirgod") || path == r.Path {
 			return nil
 		}
 
@@ -199,13 +199,13 @@ func (r *Repository) clearStructure() error {
 }
 
 func (r *Repository) changeHeadPointer(commitId string) error {
-	HEADFile, err := os.ReadFile(r.Name + "/.dirgod/HEAD")
+	HEADFile, err := os.ReadFile(r.Path + "/.dirgod/HEAD")
 	if err != nil {
 		return err
 	}
 
 	refPath := strings.Split(string(HEADFile), "ref: ")[1]
-	err = os.WriteFile(r.Name+"/.dirgod/"+refPath, []byte(commitId), 0644)
+	err = os.WriteFile(r.Path+"/.dirgod/"+refPath, []byte(commitId), 0644)
 	if err != nil {
 		return err
 	}
@@ -240,7 +240,7 @@ func (r *Repository) PrintCommitLog() string {
 }
 
 func (r *Repository) getCommitHistory() []models.CommitLog {
-	branch, err := os.ReadFile(r.Name + "/.dirgod/HEAD")
+	branch, err := os.ReadFile(r.Path + "/.dirgod/HEAD")
 	if err != nil {
 		return nil
 	}
@@ -249,7 +249,7 @@ func (r *Repository) getCommitHistory() []models.CommitLog {
 	splitRef := strings.Split(ref[1], "/")
 	branchName := splitRef[len(splitRef)-1]
 
-	logFile, err := os.Open(r.Name + "/.dirgod/logs/" + branchName)
+	logFile, err := os.Open(r.Path + "/.dirgod/logs/" + branchName)
 	if err != nil {
 		return nil
 	}
@@ -271,13 +271,13 @@ func (r *Repository) getCommitHistory() []models.CommitLog {
 }
 
 func (r *Repository) getActiveCommitId() string {
-	HEADFileContent, err := os.ReadFile(r.Name + "/.dirgod/HEAD")
+	HEADFileContent, err := os.ReadFile(r.Path + "/.dirgod/HEAD")
 	if err != nil {
 		return ""
 	}
 
 	reference := strings.Split(string(HEADFileContent), "ref: ")[1]
-	commitId, err := os.ReadFile(r.Name + "/.dirgod/" + reference)
+	commitId, err := os.ReadFile(r.Path + "/.dirgod/" + reference)
 	if err != nil {
 		return ""
 	}
@@ -287,7 +287,7 @@ func (r *Repository) getActiveCommitId() string {
 
 func (r *Repository) getAllCommits() []models.Commit {
 	var commits []models.Commit
-	err := filepath.Walk(r.Name+"/.dirgod/refs/commits", func(path string, info fs.FileInfo, err error) error {
+	err := filepath.Walk(r.Path+"/.dirgod/refs/commits", func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -329,7 +329,7 @@ func (r *Repository) getCommitRootTree(commitId string) *models.Tree {
 	}
 
 	var tree models.Tree
-	fileContent, err := os.ReadFile(r.Name + "/.dirgod/objects/" + commitObject.CommitId[:10] + "/" + commitObject.Tree)
+	fileContent, err := os.ReadFile(r.Path + "/.dirgod/objects/" + commitObject.CommitId[:10] + "/" + commitObject.Tree)
 	if err != nil {
 		return nil
 	}
