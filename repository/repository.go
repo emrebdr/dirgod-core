@@ -43,7 +43,7 @@ func LoadRepository() *Repository {
 		return nil
 	})
 
-	if err != nil {
+	if err != nil || repo.Name == "" {
 		return nil
 	}
 

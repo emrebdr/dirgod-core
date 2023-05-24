@@ -3,6 +3,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/emrebdr/dirgod-core/builder"
 )
 
@@ -12,16 +14,16 @@ func main() {
 	nativeBuilder.SetWorkingMode("force")
 	nativeBuilder.SetCacheMode("true")
 	arguments := map[string]any{
-		"source":      "models",
-		"destination": "tests",
+		"source":      "test.py",
 		"workingMode": "strict",
 		"cache":       false,
 	}
 
-	err := nativeBuilder.CreateNewOperation("copyfolder", arguments)
+	err := nativeBuilder.CreateNewOperation("createfile", arguments)
 	if err != nil {
 		panic(err)
 	}
 
-	nativeBuilder.Execute([]byte("new commit"))
+	err = nativeBuilder.Execute([]byte("new commit"))
+	fmt.Printf("err: %v\n", err)
 }
