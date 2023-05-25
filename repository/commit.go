@@ -483,7 +483,10 @@ func (r *Repository) addTreeObject(directoryPath string, fileInfo fs.FileInfo, d
 
 	directoryMap[fileInfo.Name()] = &newTree
 	if previousDir != "" {
-		directoryMap[previousDir].Trees = append(directoryMap[previousDir].Trees, newTree.TreeId)
+		_, ok := directoryMap[previousDir]
+		if ok {
+			directoryMap[previousDir].Trees = append(directoryMap[previousDir].Trees, newTree.TreeId)
+		}
 	}
 
 	return directoryMap
