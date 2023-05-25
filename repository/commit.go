@@ -215,7 +215,9 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		}
 	}
 
-	root := directoryMap[r.Name]
+	splitPath := strings.Split(r.Path, "/")
+	rootName := splitPath[len(splitPath)-1]
+	root := directoryMap[rootName]
 
 	return root, nil
 }
