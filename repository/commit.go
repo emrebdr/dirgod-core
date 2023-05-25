@@ -39,6 +39,7 @@ func (r *Repository) createCommitObject(message string) error {
 
 	tree, err := r.createTree(commitId[:10])
 	if err != nil {
+		fmt.Printf("tree: %v\n", err)
 		return err
 	}
 
@@ -48,16 +49,19 @@ func (r *Repository) createCommitObject(message string) error {
 
 	err = r.saveReporefFile(r)
 	if err != nil {
+		fmt.Printf("repo ref: %v\n", err)
 		return err
 	}
 
 	err = r.createCommitFiles(commitId, message)
 	if err != nil {
+		fmt.Printf("create commit file: %v\n", err)
 		return err
 	}
 
 	err = r.createCommitLog(commitId, message)
 	if err != nil {
+		fmt.Printf("create commit log: %v\n", err)
 		return err
 	}
 
