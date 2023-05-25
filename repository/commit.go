@@ -190,6 +190,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		repoErr := r.checkRepositoryAlreadyExist()
 		treeObject, err := r.findAndGetLastCommitObject(object.Name, object.Path)
 		if err != nil && repoErr != nil {
+			fmt.Printf("repoErr check: %v\n", repoErr)
 			fmt.Printf("t is commitable: %v\n", err)
 			return nil, err
 		}
@@ -236,12 +237,14 @@ func (r *Repository) createObject(ref, id string, object interface{}) error {
 	if _, err := os.Stat(r.Path + "/.dirgod/objects/" + ref); os.IsNotExist(err) {
 		err = os.MkdirAll(r.Path+"/.dirgod/objects/"+ref, 0755)
 		if err != nil {
+			fmt.Printf("aerr: %v\n", err)
 			return err
 		}
 	}
 
 	objectFile, err := os.Create(r.Path + "/.dirgod/objects/" + ref + "/" + id)
 	if err != nil {
+		fmt.Printf("errsa: %v\n", err)
 		return err
 	}
 
@@ -249,11 +252,13 @@ func (r *Repository) createObject(ref, id string, object interface{}) error {
 
 	serializedObject, err := json.Marshal(object)
 	if err != nil {
+		fmt.Printf("erras: %v\n", err)
 		return err
 	}
 
 	err = binary.Write(objectFile, binary.BigEndian, serializedObject)
 	if err != nil {
+		fmt.Printf("err:rw %v\n", err)
 		return err
 	}
 
@@ -451,6 +456,8 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 	repoErr := r.checkRepositoryAlreadyExist()
 	treeObject, err := r.findAndGetLastCommitObject(newTree.Name, newTree.Path)
 	if err != nil && repoErr != nil {
+		fmt.Printf("err1: %v\n", err)
+		fmt.Printf("repoErr3: %v\n", repoErr)
 		return err
 	}
 
@@ -459,6 +466,7 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 		if comparisonResult != "" {
 			err = r.softLinkFile(r.Path+"/.dirgod/objects/"+ref, comparisonResult)
 			if err != nil {
+				fmt.Printf("err3: %v\n", err)
 				return err
 			}
 
@@ -468,6 +476,7 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 
 	err = r.createObject(ref, id, newTree)
 	if err != nil {
+		fmt.Printf("err:6 %v\n", err)
 		return err
 	}
 
