@@ -155,7 +155,7 @@ func (r *Repository) clearStructure() error {
 			return err
 		}
 
-		if strings.HasPrefix(path, r.Path+"/.dirgod") || path == r.Path {
+		if strings.HasPrefix(path, r.Path+"/.dirgod") || path == r.Path || (strings.HasPrefix(path, r.Path+"/.git") && !strings.HasPrefix(path, r.Path+"/.gitignore")) {
 			return nil
 		}
 
