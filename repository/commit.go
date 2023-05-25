@@ -402,7 +402,11 @@ func (r *Repository) addBlobObject(path, filename string, directoryMap map[strin
 		}
 	}
 
-	directoryMap[previousDir].Blobs = append(directoryMap[previousDir].Blobs, newBlob.BlobId)
+	_, ok := directoryMap[previousDir]
+	if ok {
+		directoryMap[previousDir].Blobs = append(directoryMap[previousDir].Blobs, newBlob.BlobId)
+	}
+
 	blobMap[newBlob.BlobId] = &newBlob
 
 	return directoryMap, blobMap, nil
