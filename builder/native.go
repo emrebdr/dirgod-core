@@ -192,14 +192,7 @@ func (n *NativeBuilder) CreateNewOperation(operationName string, arguments ...in
 func (n *NativeBuilder) Execute(commitMessage []byte) error {
 	repo := repository.LoadRepository()
 	if repo == nil {
-		currDir, err := os.Getwd()
-		if err != nil {
-			return err
-		}
-
-		splitName := strings.Split(currDir, "/")
-		repoName := splitName[len(splitName)-1]
-		repo = repository.Init(repoName, "", repoName+"/..")
+		return errors.New("first you need to create a new repository")
 	}
 
 	for _, operation := range n.operations {
