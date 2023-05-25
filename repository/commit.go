@@ -145,7 +145,11 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	blobMap := map[string]*models.Blob{}
 
 	err := filepath.Walk(r.Path, func(path string, info fs.FileInfo, err error) error {
-		if (strings.HasPrefix(path, r.Path+"/.dirgod") && !strings.HasPrefix(path, r.Path+"/.dirgodignore")) || (strings.HasPrefix(path, r.Path+"/.git") && !strings.HasPrefix(path, r.Path+"/.gitignore")) { //! tbc
+		if strings.HasPrefix(path, r.Path+"/.dirgod") && !strings.HasPrefix(path, r.Path+"/.dirgodignore") { //! tbc
+			return nil
+		}
+
+		if strings.HasPrefix(path, r.Path+"/.git") && !strings.HasPrefix(path, r.Path+"/.gitignore") {
 			return nil
 		}
 
@@ -581,7 +585,11 @@ func (r *Repository) getCurrentSnapshotPath() string {
 func (r *Repository) createFolderHash(directoryPath string) string {
 	var content string = ""
 	err := filepath.Walk(directoryPath, func(path string, info fs.FileInfo, fErr error) error {
-		if (strings.HasPrefix(path, r.Path+"/.dirgod") && !strings.HasPrefix(path, r.Path+"/.dirgodignore")) || (strings.HasPrefix(path, r.Path+"/.git") && !strings.HasPrefix(path, r.Path+"/.gitignore")) { //! tbc
+		if strings.HasPrefix(path, r.Path+"/.dirgod") && !strings.HasPrefix(path, r.Path+"/.dirgodignore") { //! tbc
+			return nil
+		}
+
+		if strings.HasPrefix(path, r.Path+"/.git") && !strings.HasPrefix(path, r.Path+"/.gitignore") {
 			return nil
 		}
 

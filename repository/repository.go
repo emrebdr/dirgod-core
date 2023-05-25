@@ -22,7 +22,12 @@ type Repository struct {
 }
 
 func Init(name, description, path string) *Repository {
-	repo := &Repository{Name: name, Description: description, Path: path}
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return nil
+	}
+
+	repo := &Repository{Name: name, Description: description, Path: absPath}
 	repo.initializeRepository()
 	return repo
 }
