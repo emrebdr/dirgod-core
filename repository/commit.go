@@ -39,11 +39,8 @@ func (r *Repository) createCommitObject(message string) error {
 
 	tree, err := r.createTree(commitId[:10])
 	if err != nil {
-		fmt.Printf("tree: %v\n", err)
 		return err
 	}
-
-	fmt.Printf("tree obj: %v\n", tree)
 
 	commit.Tree = tree.TreeId
 
@@ -51,19 +48,16 @@ func (r *Repository) createCommitObject(message string) error {
 
 	err = r.saveReporefFile(r)
 	if err != nil {
-		fmt.Printf("repo ref: %v\n", err)
 		return err
 	}
 
 	err = r.createCommitFiles(commitId, message)
 	if err != nil {
-		fmt.Printf("create commit file: %v\n", err)
 		return err
 	}
 
 	err = r.createCommitLog(commitId, message)
 	if err != nil {
-		fmt.Printf("create commit log: %v\n", err)
 		return err
 	}
 
@@ -160,7 +154,6 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		}
 
 		if err != nil {
-			fmt.Printf("t walk: %v\n", err)
 			return err
 		}
 
@@ -171,7 +164,6 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 
 		dirMap, newBlobMap, err := r.addBlobObject(path, info.Name(), directoryMap, blobMap)
 		if err != nil {
-			fmt.Printf("t walk for blob: %v\n", err)
 			return err
 		}
 
@@ -181,7 +173,6 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	})
 
 	if err != nil {
-		fmt.Printf("t walk err: %v\n", err)
 		return nil, err
 	}
 
@@ -190,8 +181,6 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		repoErr := r.checkRepositoryAlreadyExist()
 		treeObject, err := r.findAndGetLastCommitObject(object.Name, object.Path)
 		if err != nil && repoErr != nil {
-			fmt.Printf("repoErr check: %v\n", repoErr)
-			fmt.Printf("t is commitable: %v\n", err)
 			return nil, err
 		}
 
@@ -215,7 +204,6 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	for _, object := range directoryMap {
 		err := r.createTreeObject(ref, object.TreeId, *object)
 		if err != nil {
-			fmt.Printf("t1: %v\n", err)
 			return nil, err
 		}
 	}
@@ -223,12 +211,11 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	for _, object := range blobMap {
 		err := r.createBlobObject(ref, object.BlobId, *object)
 		if err != nil {
-			fmt.Printf("t2: %v\n", err)
 			return nil, err
 		}
 	}
 
-	root := directoryMap[r.Path]
+	root := directoryMap[r.Name]
 
 	return root, nil
 }
@@ -237,14 +224,12 @@ func (r *Repository) createObject(ref, id string, object interface{}) error {
 	if _, err := os.Stat(r.Path + "/.dirgod/objects/" + ref); os.IsNotExist(err) {
 		err = os.MkdirAll(r.Path+"/.dirgod/objects/"+ref, 0755)
 		if err != nil {
-			fmt.Printf("aerr: %v\n", err)
 			return err
 		}
 	}
 
 	objectFile, err := os.Create(r.Path + "/.dirgod/objects/" + ref + "/" + id)
 	if err != nil {
-		fmt.Printf("errsa: %v\n", err)
 		return err
 	}
 
@@ -252,13 +237,11 @@ func (r *Repository) createObject(ref, id string, object interface{}) error {
 
 	serializedObject, err := json.Marshal(object)
 	if err != nil {
-		fmt.Printf("erras: %v\n", err)
 		return err
 	}
 
 	err = binary.Write(objectFile, binary.BigEndian, serializedObject)
 	if err != nil {
-		fmt.Printf("err:rw %v\n", err)
 		return err
 	}
 
@@ -456,8 +439,6 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 	repoErr := r.checkRepositoryAlreadyExist()
 	treeObject, err := r.findAndGetLastCommitObject(newTree.Name, newTree.Path)
 	if err != nil && repoErr != nil {
-		fmt.Printf("err1: %v\n", err)
-		fmt.Printf("repoErr3: %v\n", repoErr)
 		return err
 	}
 
@@ -466,7 +447,6 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 		if comparisonResult != "" {
 			err = r.softLinkFile(r.Path+"/.dirgod/objects/"+ref, comparisonResult)
 			if err != nil {
-				fmt.Printf("err3: %v\n", err)
 				return err
 			}
 
@@ -476,7 +456,6 @@ func (r *Repository) createTreeObject(ref, id string, newTree models.Tree) error
 
 	err = r.createObject(ref, id, newTree)
 	if err != nil {
-		fmt.Printf("err:6 %v\n", err)
 		return err
 	}
 
@@ -489,8 +468,6 @@ func (r *Repository) addTreeObject(directoryPath string, fileInfo fs.FileInfo, d
 	repoErr := r.checkRepositoryAlreadyExist()
 	treeObject, err := r.findAndGetLastCommitObject(fileInfo.Name(), directoryPath)
 	if err != nil && repoErr != nil {
-		fmt.Printf("find err: %v\n", err)
-		fmt.Printf("repo Err: %v\n", repoErr)
 		return nil
 	}
 
@@ -502,13 +479,11 @@ func (r *Repository) addTreeObject(directoryPath string, fileInfo fs.FileInfo, d
 		if comparisonResult != "" {
 			treeContent, err := os.ReadFile(comparisonResult)
 			if err != nil {
-				fmt.Printf("read err: %v\n", err)
 				return nil
 			}
 
 			err = json.Unmarshal(treeContent, &newTree)
 			if err != nil {
-				fmt.Printf("json err: %v\n", err)
 				return nil
 			}
 		}

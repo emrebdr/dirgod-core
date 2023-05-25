@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -24,14 +23,12 @@ type Repository struct {
 func Init(name, description, path string) *Repository {
 	absPath, err := filepath.Abs(path)
 	if err != nil {
-		fmt.Printf("abs: %v\n", err)
 		return nil
 	}
 
 	repo := &Repository{Name: name, Description: description, Path: absPath}
 	err = repo.initializeRepository()
 	if err != nil {
-		fmt.Printf("init: %v\n", err)
 		return nil
 	}
 	return repo
@@ -72,75 +69,63 @@ func (r *Repository) checkRepositoryAlreadyExist() error {
 func (r *Repository) initializeRepository() error {
 	err := r.checkRepositoryAlreadyExist()
 	if err != nil {
-		fmt.Printf("check: %v\n", err)
 		return err
 	}
 
 	err = os.MkdirAll(r.Path+"/.dirgod/objects", 0755)
 	if err != nil {
-		fmt.Printf("obj: %v\n", err)
 		return err
 	}
 
 	err = os.MkdirAll(r.Path+"/.dirgod/refs/branches", 0755)
 	if err != nil {
-		fmt.Printf("branch: %v\n", err)
 		return err
 	}
 
 	err = os.MkdirAll(r.Path+"/.dirgod/refs/commits", 0755)
 	if err != nil {
-		fmt.Printf("commits: %v\n", err)
 		return err
 	}
 
 	err = os.MkdirAll(r.Path+"/.dirgod/logs", 0755)
 	if err != nil {
-		fmt.Printf("logs: %v\n", err)
 		return err
 	}
 
 	if _, err = os.Stat(r.Path + "/Dirgod"); os.IsNotExist(err) {
 		_, err = os.Create(r.Path + "/Dirgod")
 		if err != nil {
-			fmt.Printf("dirgod err: %v\n", err)
 			return err
 		}
 	}
 
 	_, err = os.Create(r.Path + "/.dirgodignore")
 	if err != nil {
-		fmt.Printf("ignore: %v\n", err)
 		return err
 	}
 
 	err = r.createREADMEFile()
 	if err != nil {
-		fmt.Printf("readme: %v\n", err)
 		return err
 	}
 
 	err = r.createDescriptionFile()
 	if err != nil {
-		fmt.Printf("description: %v\n", err)
 		return err
 	}
 
 	err = r.loadRootConfigFile()
 	if err != nil {
-		fmt.Printf("loadRoot: %v\n", err)
 		return err
 	}
 
 	err = r.loadInternalConfigFile()
 	if err != nil {
-		fmt.Printf("loadInternal: %v\n", err)
 		return err
 	}
 
 	err = r.createCommitObject("Initial Commit")
 	if err != nil {
-		fmt.Printf("create commit object: %v\n", err)
 		return err
 	}
 
@@ -192,7 +177,6 @@ func (r *Repository) loadInternalConfigFile() error {
 
 		file, err := os.Create(r.Path + "/.dirgod/config")
 		if err != nil {
-			fmt.Printf("err: %v\n", err)
 			return err
 		}
 
