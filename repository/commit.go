@@ -43,6 +43,8 @@ func (r *Repository) createCommitObject(message string) error {
 		return err
 	}
 
+	fmt.Printf("tree obj: %v\n", tree)
+
 	commit.Tree = tree.TreeId
 
 	r.CommitObject = commit
@@ -158,6 +160,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		}
 
 		if err != nil {
+			fmt.Printf("t walk: %v\n", err)
 			return err
 		}
 
@@ -168,6 +171,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 
 		dirMap, newBlobMap, err := r.addBlobObject(path, info.Name(), directoryMap, blobMap)
 		if err != nil {
+			fmt.Printf("t walk for blob: %v\n", err)
 			return err
 		}
 
@@ -177,6 +181,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	})
 
 	if err != nil {
+		fmt.Printf("t walk err: %v\n", err)
 		return nil, err
 	}
 
@@ -185,6 +190,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 		repoErr := r.checkRepositoryAlreadyExist()
 		treeObject, err := r.findAndGetLastCommitObject(object.Name, object.Path)
 		if err != nil && repoErr != nil {
+			fmt.Printf("t is commitable: %v\n", err)
 			return nil, err
 		}
 
@@ -208,6 +214,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	for _, object := range directoryMap {
 		err := r.createTreeObject(ref, object.TreeId, *object)
 		if err != nil {
+			fmt.Printf("t1: %v\n", err)
 			return nil, err
 		}
 	}
@@ -215,6 +222,7 @@ func (r *Repository) createTree(ref string) (*models.Tree, error) {
 	for _, object := range blobMap {
 		err := r.createBlobObject(ref, object.BlobId, *object)
 		if err != nil {
+			fmt.Printf("t2: %v\n", err)
 			return nil, err
 		}
 	}
