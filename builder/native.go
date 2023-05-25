@@ -199,7 +199,7 @@ func (n *NativeBuilder) Execute(commitMessage []byte) error {
 
 		splitName := strings.Split(currDir, "/")
 		repoName := splitName[len(splitName)-1]
-		repo = repository.Init(repoName, "", repoName)
+		repo = repository.Init(repoName, "", repoName+"/..")
 	}
 
 	for _, operation := range n.operations {

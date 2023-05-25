@@ -216,16 +216,6 @@ func (r *Repository) createREADMEFile() error {
 		return errors.New("something went wrong while preparing README.md file")
 	}
 
-	err = os.MkdirAll(r.Path+"/models", 0755)
-	if err != nil {
-		return err
-	}
-
-	_, err = os.Create(r.Path + "/models/user.py")
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
