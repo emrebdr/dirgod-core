@@ -480,6 +480,8 @@ func (r *Repository) addTreeObject(directoryPath string, fileInfo fs.FileInfo, d
 	repoErr := r.checkRepositoryAlreadyExist()
 	treeObject, err := r.findAndGetLastCommitObject(fileInfo.Name(), directoryPath)
 	if err != nil && repoErr != nil {
+		fmt.Printf("find err: %v\n", err)
+		fmt.Printf("repo Err: %v\n", repoErr)
 		return nil
 	}
 
@@ -491,11 +493,13 @@ func (r *Repository) addTreeObject(directoryPath string, fileInfo fs.FileInfo, d
 		if comparisonResult != "" {
 			treeContent, err := os.ReadFile(comparisonResult)
 			if err != nil {
+				fmt.Printf("read err: %v\n", err)
 				return nil
 			}
 
 			err = json.Unmarshal(treeContent, &newTree)
 			if err != nil {
+				fmt.Printf("json err: %v\n", err)
 				return nil
 			}
 		}
