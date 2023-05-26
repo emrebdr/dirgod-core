@@ -50,6 +50,11 @@ func (r *Repository) Rollback(commitId string) error {
 		return err
 	}
 
+	err = r.changeCommitMessageFile(fullCommitId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -217,8 +222,38 @@ func (r *Repository) changeHeadPointer(commitId string) error {
 	return nil
 }
 
+func (r *Repository) changeCommitMessageFile(commitId string) error {
+	commitObj := r.findCommitObject(commitId)
+	if commitObj == nil {
+		return errors.New("commit object couldn't find")
+	}
+
+	err := os.WriteFile(r.Path+"/.dirgod/COMMIT_MSG", []byte(commitObj.Message), 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Repository) findCommitObject(commitId string) *models.Commit {
+	commits := r.getAllCommits()
+	for _, commit := range commits {
+		if commit.CommitId == commitId {
+			return &commit
+		}
+	}
+
+	return nil
+}
+
 func (r *Repository) changeRepositoryCommitPointer(commitId string) error {
-	r.CommitObject.CommitId = commitId
+	commitObj := r.findCommitObject(commitId)
+	if commitObj == nil {
+		return errors.New("commit object couldn't find")
+	}
+	r.CommitObject = *commitObj
+
 	err := r.saveReporefFile(r)
 	if err != nil {
 		return err

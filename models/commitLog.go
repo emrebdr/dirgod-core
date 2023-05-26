@@ -15,7 +15,7 @@ type CommitLog struct {
 }
 
 func (c *CommitLog) Serialize() string {
-	return fmt.Sprintf("%s %s %s %s %d\n", c.PreviousCommitId, c.CommitId, c.Committer, c.Message, c.Time)
+	return fmt.Sprintf("%s %s %s %d %s\n", c.PreviousCommitId, c.CommitId, c.Committer, c.Time, c.Message)
 }
 
 func (c *CommitLog) Deserialize(input string) (*CommitLog, error) {
@@ -23,13 +23,22 @@ func (c *CommitLog) Deserialize(input string) (*CommitLog, error) {
 	c.PreviousCommitId = data[0]
 	c.CommitId = data[1]
 	c.Committer = data[2] + " " + data[3]
-	c.Message = data[4]
 
-	time, err := strconv.ParseInt(data[5], 10, 64)
+	time, err := strconv.ParseInt(data[4], 10, 64)
 	if err != nil {
 		return nil, err
 	}
 	c.Time = time
+
+	message := ""
+	if len(data) >= 6 {
+		for i := 5; i < len(data); i++ {
+			message += data[i] + " "
+		}
+	}
+
+	message = strings.TrimSpace(message)
+	c.Message = message
 
 	return c, nil
 }
